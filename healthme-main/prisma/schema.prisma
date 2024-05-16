@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int    @id @default(autoincrement())
+  name          String?
+  email         String?   @unique
+  password      String?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  birthDate     DateTime?
+  gender        String?
+  sessions      ChatSession[]
+  medications   Medications[]
+  vitals        Vitals[]
+  allergies     Allergies[]
+}
+
+model ChatSession {
+  id         Int         @id @default(autoincrement())
+  userId     Int
+  user       User        @relation(fields: [userId], references: [id])
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  symptoms   String?    // List of symptoms reported during the session
+  diagnosis  String?     // Tentative diagnosis
+  disease    String?     // Disease diagnosed
+}
+
+model Medications {
+  id                Int         @id @default(autoincrement())
+  name              String
+  instructions      String
+  dose              String?
+  frequency         String?
+  user              User        @relation(fields: [userId], references: [id])
+  userId            Int
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+model Vitals {
+  id          Int         @id @default(autoincrement())
+  userId      Int
+  user        User        @relation(fields: [userId], references: [id])
+  type        String
+  value       String?
+  systolic    String?
+  diastolic   String?
+  flow        String?
+  color       String?
+  consistency String?
+  createdAt   DateTime    @default(now())
+}
+
+model Allergies {
+   id           Int         @id @default(autoincrement())
+   userId       Int
+   user         User        @relation(fields: [userId], references: [id])
+   name         String
+   type         String
+   description  String?
+   createdAt    DateTime    @default(now())
+   medications  String?
+}
+
+
+
+
+
+
+
+
